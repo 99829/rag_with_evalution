@@ -19,3 +19,5 @@ __pycache__/
 .streamlit/secrets.toml
 chroma_db/
 src/
+chroma_db_backup/
+src_backup/
