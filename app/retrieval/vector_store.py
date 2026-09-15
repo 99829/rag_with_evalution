@@ -73,3 +73,14 @@ class VectorStore:
 
     def count(self) -> int:
         return self.collection.count()
+    def delete_document(self, doc_id: str):
+        self.collection.delete(where={"doc_id": doc_id})
+        
+    def list_documents_with_ids(self) -> List[Dict]:
+        """Return each indexed document's name alongside its doc_id,
+        needed for deletion (delete_document requires doc_id, not name)."""
+        data = self.collection.get()
+        seen = {}
+        for m in data["metadatas"]:
+            seen[m["doc_name"]] = m["doc_id"]
+        return [{"doc_name": name, "doc_id": doc_id} for name, doc_id in sorted(seen.items())]    

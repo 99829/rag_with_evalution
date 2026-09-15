@@ -60,12 +60,19 @@ with st.sidebar:
             num_chunks = ingest_files(saved_paths, vector_store, bm25_index)
         st.success(f"Ingested {len(uploaded_files)} file(s), {num_chunks} chunks added.")
 
-    st.divider()
+        st.divider()
     st.subheader("Indexed documents")
-    docs = vector_store.list_documents()
+    docs = vector_store.list_documents_with_ids()
     if docs:
-        for d in docs:
-            st.write(f"• {d}")
+        for doc in docs:
+            col1, col2 = st.columns([4, 1])
+            with col1:
+                st.write(f"• {doc['doc_name']}")
+            with col2:
+                if st.button("🗑️", key=f"delete_{doc['doc_id']}", help=f"Remove {doc['doc_name']}"):
+                    vector_store.delete_document(doc['doc_id'])
+                    bm25_index.delete(doc['doc_id'])
+                    st.rerun()
     else:
         st.write("No documents indexed yet.")
     st.caption(f"Total chunks: {vector_store.count()}")

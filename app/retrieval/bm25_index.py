@@ -47,3 +47,7 @@ class BM25Index:
             }
             for c, score in scored_chunks if score > 0
         ]
+    def delete(self, doc_id: str):
+        """Remove all chunks belonging to a given doc_id and rebuild the index."""
+        remaining_chunks = [c for c in self.chunks if c["doc_id"] != doc_id]
+        self.build(remaining_chunks)
